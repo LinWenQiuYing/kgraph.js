@@ -1,0 +1,55 @@
+image: 172.16.1.99/transwarp/sophon/builder/fe_ci_runner:latest
+before_script:
+   - source /etc/profile
+   - source /root/.bashrc
+   - echo "nameserver 180.168.255.118" >> /etc/resolv.conf
+   - echo "172.16.3.127 tw-node3227" >> /etc/hosts
+   - echo "172.16.3.128 tw-node3228" >> /etc/hosts
+   - echo "172.16.3.129 tw-node3229" >> /etc/hosts
+   - echo "172.16.130.63 tw-node13063" >> /etc/hosts
+   - echo "172.16.130.64 tw-node1364" >> /etc/hosts
+   - echo "172.16.130.65 tw-node1365" >> /etc/hosts
+   - echo "172.26.0.41 tw-node41" >> /etc/hosts
+   - echo "172.26.0.42 tw-node42" >> /etc/hosts
+   - echo "172.26.0.43 tw-node43" >> /etc/hosts
+   - echo "172.26.0.44 tw-node44" >> /etc/hosts
+
+cache:
+  key: share-all
+  paths:
+      - node_modules/
+
+stages:
+   - build
+   - deploy
+
+precommit_build:
+  stage: build
+  script:
+      - export LC_ALL="en_US.UTF-8"
+      - yarn install --frozen-lockfile --ignore-engines
+      - yarn build
+#      - sonar-scanner
+  except:
+      - master
+      - /^branch-\d\.\d$/
+      - /^*_OEM$/
+  tags:
+    - k8s
+
+postcommit_build:
+  stage: build
+  script:
+      - export LC_ALL="en_US.UTF-8"
+      - yarn install --frozen-lockfile --ignore-engines
+      - yarn build
+      - npm publish
+
+  only:
+      - master
+      - /^branch-\d\.\d$/
+      - /^*_OEM$/
+      - ci
+  tags:
+    - k8s
+

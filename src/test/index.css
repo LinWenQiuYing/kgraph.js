@@ -1,0 +1,19 @@
+.cxt-menu {
+    min-width: 150px;
+    position: fixed;
+    list-style: none;
+    margin: 5px 10px;
+    padding: 0;
+    background: #FFF;
+    border-radius: 3px;
+    box-shadow: 2px 2px 5px #DDD;
+}
+
+.cxt-menu-item {
+    height: 25px;
+    line-height: 25px;
+    margin: 0;
+    padding: 5px 15px;
+    font-size: 12px;
+    cursor: pointer;
+}
